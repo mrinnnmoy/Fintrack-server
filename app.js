@@ -11,6 +11,10 @@ const app = express();
 dotenv.config({path: './config.env'});
 require('./db/conn');
 
+// Require Model
+const Users = require('./models/userSchema');
+
+
 // These Method is used to Get Data and Cookies from FrontEnd
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
