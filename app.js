@@ -15,7 +15,7 @@ const port = process.env.PORT;
 // Require Model
 const Users = require("./models/userSchema");
 
-// These Method is used to Get Data & Cookies from FrontEnd
+// These Method is Used to Get Data and Cookies from FrontEnd
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -38,9 +38,9 @@ app.post("/register", async (req, res) => {
       password: password,
     });
 
-    // Save Method is used to create user or insert user
+    // Save Method is Used to Create User or Insert User
     // But Before Saving or Inserting, Password will Hash
-    // Because of Hashing. After Hash, it will save to DB
+    // Because of Hashing. After Hash, It will save to DB
     const created = await createUser.save();
     console.log(created);
     res.status(200).send("Registered");
@@ -49,27 +49,27 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// Login user
-app.post('/login', async (req,res)=> {
+// Login User
+app.post("/login", async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
 
-    // Find user if exist
-    const user = await Users.findOne({email: email});
+    // Find User if Exist
+    const user = await Users.findOne({ email: email });
     if (user) {
       // Verify Password
       const isMatch = await bcryptjs.compare(password, user.password);
 
       if (isMatch) {
-        // Generate token which is define in user schema
+        // Generate Token Which is Define in User Schema
         const token = await user.generateToken();
-        res.cookie("jwt", token,{
-          // Expires Token in 24 hours
+        res.cookie("jwt", token, {
+          // Expires Token in 24 Hours
           expires: new Date(Date.now() + 86400000),
-          httpOnly: true
-        })
-        res.status(200).send("LoggedIn")
+          httpOnly: true,
+        });
+        res.status(200).send("LoggedIn");
       } else {
         res.status(400).send("Invalid Credentials");
       }
@@ -79,7 +79,7 @@ app.post('/login', async (req,res)=> {
   } catch (error) {
     res.status(400).send(error);
   }
-})
+});
 
 // Run Server
 app.listen(port, () => {

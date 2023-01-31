@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// User Schema or Document Structure
+// User Schema Or Document Structure
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-// Hassing Password to Secure
+// Hashing Password to Secure
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = bcryptjs.hashSync(this.password, 10);
@@ -36,10 +36,10 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Generate Tokens to verify user
+// Generate Tokens to Verify User
 userSchema.methods.generateToken = async function () {
   try {
-    let generatedToken = jwt.sign({ _id: this.id }, process.env.SECRET_KEY);
+    let generatedToken = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
     this.tokens = this.tokens.concat({ token: generatedToken });
     await this.save();
     return generatedToken;
@@ -49,7 +49,6 @@ userSchema.methods.generateToken = async function () {
 };
 
 // Create Model
-
 const Users = new mongoose.model("USER", userSchema);
 
-module.exports = true;
+module.exports = Users;
