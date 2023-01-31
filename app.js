@@ -49,6 +49,38 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// Login user
+app.post('/login', async (req,res)=> {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    // Find user if exist
+    const user = await Users.findOne({email: email});
+    if (user) {
+      // Verify Password
+      const isMatch = await bcryptjs.compare(password, user.password);
+
+      if (isMatch) {
+        // Generate token which is define in user schema
+        const token = await user.generateToken();
+        res.cookie("jwt", token,{
+          // Expires Token in 24 hours
+          expires: new Date(Date.now() + 86400000),
+          httpOnly: true
+        })
+        res.status(200).send("LoggedIn")
+      } else {
+        res.status(400).send("Invalid Credentials");
+      }
+    } else {
+      res.status(400).send("Invalid Credentials");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+})
+
 // Run Server
 app.listen(port, () => {
   console.log("Server is Listening");
